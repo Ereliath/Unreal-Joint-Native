@@ -32,15 +32,17 @@ public:
 
 
 public:
-
-	virtual void ModifyGraphNodeSlate() override;
-
+	
 	virtual void OnNodeInstancePropertyChanged(const FPropertyChangedEvent& PropertyChangedEvent, const FString& PropertyName) override;
-
-	void UpdateSlate();
-
+	
 	virtual bool CanHaveBreakpoint() const override;
 	
+public:
+	
+	virtual void ModifyGraphNodeSlate(const TSharedPtr<SJointGraphNodeBase>& InGraphNodeSlate) override;
+
+	virtual void UpdateGraphNodeSlate(const TSharedPtr<SJointGraphNodeBase>& InGraphNodeSlate) override;
+
 public:
 
 	/**

@@ -16,8 +16,6 @@ UDialogueEdFragment_Text::UDialogueEdFragment_Text()
 {
 	NodeWidth = 0;
 	NodeHeight = 0;
-
-	DefaultEdNodeSetting.bIsNodeResizeable = false;
 }
 
 
@@ -26,14 +24,11 @@ TSubclassOf<UJointNodeBase> UDialogueEdFragment_Text::SupportedNodeClass()
 	return UDF_Text::StaticClass();
 }
 
-
-void UDialogueEdFragment_Text::ModifyGraphNodeSlate()
+void UDialogueEdFragment_Text::ModifyGraphNodeSlate(const TSharedPtr<SJointGraphNodeBase>& InGraphNodeSlate)
 {
-	const TSharedPtr<SJointGraphNodeBase> NodeSlate = GetGraphNodeSlate().Pin();
-
-	if(NodeSlate && NodeSlate->CenterContentBox)
+	if(InGraphNodeSlate && InGraphNodeSlate->CenterContentBox)
 	{
-		NodeSlate->CenterContentBox->AddSlot()
+		InGraphNodeSlate->CenterContentBox->AddSlot()
 			.HAlign(HAlign_Fill)
 			.VAlign(VAlign_Fill)
 			[
@@ -42,17 +37,12 @@ void UDialogueEdFragment_Text::ModifyGraphNodeSlate()
 			];
 	}
 
-	UpdateSlate();
+	RequestUpdateOfGraphNodeSlate();
 }
 
-void UDialogueEdFragment_Text::UpdateSlate()
+void UDialogueEdFragment_Text::UpdateGraphNodeSlate(const TSharedPtr<SJointGraphNodeBase>& InGraphNodeSlate)
 {
-	
-	if (!GetGraphNodeSlate().IsValid()) return;
-
-	const TSharedPtr<SJointGraphNodeBase> NodeSlate = GetGraphNodeSlate().Pin();
-
-	if(NodeSlate && NodeSlate->CenterContentBox)
+	if(InGraphNodeSlate && InGraphNodeSlate->CenterContentBox)
 	{
 		ContextTextEditorContainer.Pin()->ClearChildren();
 
@@ -187,7 +177,7 @@ void UDialogueEdFragment_Text::OnNodeInstancePropertyChanged(const FPropertyChan
 {
 	Super::OnNodeInstancePropertyChanged(PropertyChangedEvent, PropertyName);
 
-	UpdateSlate();
+	RequestUpdateOfGraphNodeSlate();
 }
 
 

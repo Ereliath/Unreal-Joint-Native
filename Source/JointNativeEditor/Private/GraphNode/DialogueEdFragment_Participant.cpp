@@ -38,12 +38,11 @@ TSubclassOf<UJointNodeBase> UDialogueEdFragment_Participant::SupportedNodeClass(
 	return UDF_Participant::StaticClass();
 }
 
-
-void UDialogueEdFragment_Participant::ModifyGraphNodeSlate()
+void UDialogueEdFragment_Participant::ModifyGraphNodeSlate(const TSharedPtr<SJointGraphNodeBase>& InGraphNodeSlate)
 {
-	if (!GetGraphNodeSlate().IsValid()) return;
+	if (!InGraphNodeSlate.IsValid()) return;
 
-	const TSharedPtr<SJointGraphNodeBase> NodeSlate = GetGraphNodeSlate().Pin();
+	const TSharedPtr<SJointGraphNodeBase> NodeSlate = InGraphNodeSlate;
 
 	if(NodeSlate && NodeSlate->CenterContentBox)
 	{
@@ -55,9 +54,10 @@ void UDialogueEdFragment_Participant::ModifyGraphNodeSlate()
 				.Visibility(EVisibility::SelfHitTestInvisible)
 			];
 
-		UpdateSlate();
+		RequestUpdateOfGraphNodeSlate();
 	}
 }
+
 
 void UDialogueEdFragment_Participant::OnNodeInstancePropertyChanged(
 	const FPropertyChangedEvent& PropertyChangedEvent, const FString& PropertyName)
@@ -65,19 +65,14 @@ void UDialogueEdFragment_Participant::OnNodeInstancePropertyChanged(
 	Super::OnNodeInstancePropertyChanged(PropertyChangedEvent, PropertyName);
 
 	//Force update
-	if (Cast<UDialogueEdFragment_Participant>(ParentNode)) Cast<UDialogueEdFragment_Participant>(ParentNode)->UpdateSlate();
+	if (Cast<UDialogueEdFragment_Participant>(ParentNode)) Cast<UDialogueEdFragment_Participant>(ParentNode)->RequestUpdateOfGraphNodeSlate();
 
-	UpdateSlate();
+	RequestUpdateOfGraphNodeSlate();
 }
 
-void UDialogueEdFragment_Participant::UpdateSlate()
+void UDialogueEdFragment_Participant::UpdateGraphNodeSlate(const TSharedPtr<SJointGraphNodeBase>& InGraphNodeSlate)
 {
-	if (!GetGraphNodeSlate().IsValid()) return;
-
-	const TSharedPtr<SJointGraphNodeSubNodeBase> NodeSlate = StaticCastSharedPtr<SJointGraphNodeSubNodeBase>(
-		GetGraphNodeSlate().Pin());
-
-	if(NodeSlate && NodeSlate->CenterContentBox)
+	if(InGraphNodeSlate && InGraphNodeSlate->CenterContentBox)
 	{
 		UDF_Participant* CastedNodeInstance = GetCastedNodeInstance<UDF_Participant>();
 

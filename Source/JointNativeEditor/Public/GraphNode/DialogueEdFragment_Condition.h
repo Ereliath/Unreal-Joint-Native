@@ -28,6 +28,6 @@ public:
 
 public:
 	
-	virtual void ModifyGraphNodeSlate() override;
+	virtual void ModifyGraphNodeSlate(const TSharedPtr<SJointGraphNodeBase>& InGraphNodeSlate) override;
 	
 };
